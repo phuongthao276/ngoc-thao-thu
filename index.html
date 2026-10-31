@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hoàng Tử Giải Cứu Tấm</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#ffe8f1;font-family:Arial,sans-serif;text-align:center;color:#633b55}
+h2{margin:12px}
+#game{width:min(96vw,850px);height:auto;border:5px solid white;border-radius:18px;background:#b9eaff;touch-action:none}
+.info{margin:8px;font-weight:bold}
+button{border:0;border-radius:14px;padding:13px 20px;background:#ff91b8;color:white;font-size:17px;font-weight:bold;margin:5px;touch-action:none}
+.controls{display:flex;justify-content:center;gap:15px}
+.controls button{width:75px;height:60px;font-size:25px}
+#message{font-weight:bold;min-height:28px}
+</style>
+</head>
+<body>
+<h2>👑 HOÀNG TỬ GIẢI CỨU TẤM 💗</h2>
+<div class="info" id="level">Màn 1 / 5</div>
+<div class="info" id="task">Tìm chiếc khăn của Tấm!</div>
+<canvas id="game" width="800" height="450"></canvas>
+<div id="message">Đi sang phải để bắt đầu nhé!</div>
+<div class="controls">
+<button id="left">⬅️</button>
+<button id="jump">⬆️</button>
+<button id="right">➡️</button>
+</div>
+<button onclick="restart()">🔄 Chơi lại</button>
+
+<script>
+const c=document.getElementById("game");
+const ctx=c.getContext("2d");
+const levels=[
+ ["🌾 Làng quê","Tìm chiếc khăn của Tấm!","🧣"],
+ ["🌳 Khu rừng","Tìm giỏ hoa bị thất lạc!","🌸"],
+ ["🏡 Nhà mẹ ghẻ","Tìm chìa khóa căn phòng!","🗝️"],
+ ["🏰 Cung điện","Tìm cánh cửa dẫn đến Tấm!","🚪"],
+ ["💗 Giải cứu Tấm","Đưa Tấm về nơi an toàn!","👸"]
+];
+let stage=0,player={x:55,y:340,v:0,vy:0},item,door,ground=380;
+let left=false,right=false,won=false,done=false;
+function setup(){
+ player={x:55,y:340,v:0,vy:0};
+ item={x:480+Math.random()*100,y:340,got:false};
+ door={x:735,y:320};
+ done=false;won=false;
+ document.getElementById("level").textContent="Màn "+(stage+1)+" / 5";
+ document.getElementById("task").textContent=levels[stage][1];
+ document.getElementById("message").textContent="Hãy tìm vật phẩm để mở đường!";
+}
+function draw(){
+ ctx.clearRect(0,0,800,450);
+ let sky=ctx.createLinearGradient(0,0,0,450);
+ sky.addColorStop(0,"#8bdcff");sky.addColorStop(1,"#e4f9ff");
+ ctx.fillStyle=sky;ctx.fillRect(0,0,800,450);
+ // clouds
+ ctx.fillStyle="white";
+ [[100,75],[350,110],[650,65]].forEach(([x,y])=>{
+ ctx.beginPath();ctx.arc(x,y,24,0,7);ctx.arc(x+25,y-8,28,0,7);ctx.arc(x+52,y,22,0,7);ctx.fill();
+ });
+ // scenery
+ ctx.fillStyle="#78c978";ctx.fillRect(0,380,800,70);
+ ctx.fillStyle="#4eae69";
+ for(let x=20;x<800;x+=100){
+ ctx.beginPath();ctx.arc(x,375,32,0,7);ctx.fill();
+ }
+ // level title
+ ctx.fillStyle="#633b55";ctx.font="bold 25px Arial";
+ ctx.fillText(levels[stage][0],25,40);
+ // collectible
+ if(!item.got){
+ ctx.font="48px Arial";ctx.fillText(levels[stage][2],item.x,item.y);
+ }
+ // door
+ ctx.font="70px Arial";ctx.fillText("🚪",door.x,380);
+ // prince
+ ctx.font="48px Arial";ctx.fillText("👑",player.x+3,player.y-15);
+ ctx.font="45px Arial";ctx.fillText("🤴",player.x,player.y+25);
+ // stage 5 princess
+ if(stage===4){
+ ctx.font="48px Arial";ctx.fillText("👸",610,370);
+ }
+ if(won){
+ ctx.fillStyle="rgba(255,255,255,.88)";
+ ctx.fillRect(120,130,560,170);
+ ctx.fillStyle="#d94d91";ctx.textAlign="center";
+ ctx.font="bold 34px Arial";
+ ctx.fillText(stage===4?"🎉 Giải cứu Tấm thành công!":"🌟 Hoàn thành màn chơi!",400,195);
+ ctx.font="22px Arial";
+ ctx.fillText(stage===4?"Chúc mừng hoàng tử!":"Nhấn TIẾP TỤC để đi tiếp",400,240);
+ ctx.textAlign="left";
+ }
+}
+function update(){
+ if(!won){
+ if(left)player.x-=3.5;
+ if(right)player.x+=3.5;
+ player.x=Math.max(0,Math.min(750,player.x));
+ player.vy+=0.55;player.y+=player.vy;
+ if(player.y>340){player.y=340;player.vy=0;}
+ if(!item.got && Math.abs(player.x-item.x)<48){
+ item.got=true;
+ document.getElementById("message").textContent="✨ Đã tìm được vật phẩm!";
+ }
+ if(item.got && player.x>690){
+ won=true;
+ document.getElementById("message").innerHTML=
+ stage===4?"💖 Tấm đã được giải cứu!":"🎉 Đã xong! <button onclick='next()'>TIẾP TỤC ➜</button>";
+ }
+ }
+ draw();requestAnimationFrame(update);
+}
+function jump(){
+ if(player.y>=339)player.vy=-12;
+}
+function next(){
+ if(stage<4){stage++;setup();}
+ else{document.getElementById("message").textContent="Bạn đã hoàn thành cả 5 màn! 💗";}
+}
+function restart(){stage=0;setup();}
+function hold(id,fn,stop){
+ let b=document.getElementById(id);
+ b.addEventListener("pointerdown",e=>{e.preventDefault();fn();});
+ if(stop)b.addEventListener("pointerup",stop);
+ if(stop)b.addEventListener("pointerleave",stop);
+ if(stop)b.addEventListener("pointercancel",stop);
+}
+hold("left",()=>left=true,()=>left=false);
+hold("right",()=>right=true,()=>right=false);
+hold("jump",jump);
+document.addEventListener("keydown",e=>{
+ if(e.key==="ArrowLeft"||e.key==="a")left=true;
+ if(e.key==="ArrowRight"||e.key==="d")right=true;
+ if(e.key==="ArrowUp"||e.key===" ")jump();
+});
+document.addEventListener("keyup",e=>{
+ if(e.key==="ArrowLeft"||e.key==="a")left=false;
+ if(e.key==="ArrowRight"||e.key==="d")right=false;
+});
+setup();update();
+</script>
+</body>
+</html>
