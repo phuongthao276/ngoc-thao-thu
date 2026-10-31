@@ -7,140 +7,300 @@
 <title>Hoàng Tử Giải Cứu Tấm</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#ffe8f1;font-family:Arial,sans-serif;text-align:center;color:#633b55}
-h2{margin:12px}
-#game{width:min(96vw,850px);height:auto;border:5px solid white;border-radius:18px;background:#b9eaff;touch-action:none}
-.info{margin:8px;font-weight:bold}
-button{border:0;border-radius:14px;padding:13px 20px;background:#ff91b8;color:white;font-size:17px;font-weight:bold;margin:5px;touch-action:none}
-.controls{display:flex;justify-content:center;gap:15px}
-.controls button{width:75px;height:60px;font-size:25px}
-#message{font-weight:bold;min-height:28px}
+body{
+  margin:0;font-family:Arial,sans-serif;
+  background:#fff0f5;color:#70465b;text-align:center;
+}
+header{padding:14px;background:#ffcee0}
+h1{font-size:clamp(21px,5vw,32px);margin:5px}
+#hud{
+  display:flex;justify-content:space-around;gap:8px;
+  flex-wrap:wrap;padding:12px;background:#fff8fb;
+  font-weight:bold;
+}
+#game{
+  position:relative;max-width:850px;margin:14px auto;
+  height:390px;overflow:hidden;border:5px solid white;
+  border-radius:22px;
+  background:linear-gradient(#aee8ff 0%,#d9f5ff 55%,#91d88e 56%,#63bd79 100%);
+  box-shadow:0 5px 15px #dbaabd;
+}
+#sun{position:absolute;top:22px;right:45px;font-size:48px}
+.cloud{position:absolute;font-size:42px}
+.c1{top:30px;left:12%}.c2{top:75px;right:25%}
+#mountain{position:absolute;bottom:120px;left:0;width:100%;font-size:75px;opacity:.75}
+#ground{
+ position:absolute;bottom:0;height:125px;width:100%;
+ background:linear-gradient(#86d879,#56b96c);
+ border-top:5px solid #b6ed9d;
+}
+.tree{position:absolute;bottom:92px;font-size:65px}
+.t1{left:7%}.t2{right:8%}.t3{left:42%}
+#house{position:absolute;bottom:105px;left:50%;transform:translateX(-50%);font-size:85px}
+#prince{
+ position:absolute;bottom:100px;left:15%;
+ font-size:52px;transition:left .18s;z-index:3;
+}
+#key{position:absolute;bottom:155px;left:70%;font-size:32px;cursor:pointer;z-index:4}
+#mission{
+ background:#fff;padding:12px;border-radius:14px;
+ margin:12px auto;max-width:850px;
+}
+#controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:12px}
+button{
+ border:0;border-radius:15px;padding:12px 17px;
+ background:#ffb7d0;color:#713e58;font-weight:bold;
+ font-size:15px;cursor:pointer;box-shadow:0 3px 0 #e68eaf;
+}
+button:active{transform:translateY(2px);box-shadow:none}
+button.secondary{background:#d9c9ff}
+button:disabled{opacity:.5}
+.panel{
+ background:white;border-radius:18px;padding:18px;
+ max-width:520px;margin:15px auto;
+ box-shadow:0 4px 12px #e9bfd0;
+}
+#puzzle{display:none;position:fixed;inset:0;background:#70465bcc;
+ z-index:10;align-items:center;justify-content:center;padding:15px}
+#puzzle .panel{width:100%;max-height:85vh;overflow:auto}
+.answer{display:block;width:100%;margin:9px 0}
+#inventory{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+#inventory span{background:#fff0f5;padding:9px;border-radius:12px}
+small{color:#9b7185}
+@media(max-width:500px){
+ #game{height:330px;margin:10px}
+ #prince{font-size:45px}
+ #house{font-size:70px}
+ .tree{font-size:52px}
+}
 </style>
 </head>
 <body>
-<h2>👑 HOÀNG TỬ GIẢI CỨU TẤM 💗</h2>
-<div class="info" id="level">Màn 1 / 5</div>
-<div class="info" id="task">Tìm chiếc khăn của Tấm!</div>
-<canvas id="game" width="800" height="450"></canvas>
-<div id="message">Đi sang phải để bắt đầu nhé!</div>
-<div class="controls">
-<button id="left">⬅️</button>
-<button id="jump">⬆️</button>
-<button id="right">➡️</button>
+
+<header>
+ <h1>👑 Hoàng Tử Giải Cứu Tấm 🌸</h1>
+ <div>✨ Hành trình cổ tích bắt đầu! ✨</div>
+</header>
+
+<div id="hud">
+ <span>❤️ Năng lượng: <b id="hp">100</b></span>
+ <span>⭐ Sao: <b id="stars">0</b></span>
+ <span>🏅 Huy hiệu: <b id="badges">0/5</b></span>
 </div>
-<button onclick="restart()">🔄 Chơi lại</button>
+
+<div id="mission">
+ <b id="stageName">Màn 1: Ngôi làng</b>
+ <p id="task">Tìm chiếc chìa khóa bí mật trong ngôi làng nhé!</p>
+</div>
+
+<div id="game">
+ <div id="sun">☀️</div>
+ <div class="cloud c1">☁️</div>
+ <div class="cloud c2">☁️</div>
+ <div id="mountain">🏔️　🏔️　🏔️</div>
+ <div class="tree t1">🌳</div>
+ <div class="tree t2">🌲</div>
+ <div class="tree t3">🌳</div>
+ <div id="house">🏡</div>
+ <div id="ground"></div>
+ <div id="prince">🤴🏻</div>
+ <div id="key" onclick="findKey()">🔑</div>
+</div>
+
+<div id="controls">
+ <button onclick="move(-8)">⬅️ Sang trái</button>
+ <button onclick="move(8)">Sang phải ➡️</button>
+ <button class="secondary" onclick="interact()">🔍 Khám phá</button>
+</div>
+
+<div class="panel">
+ <h3>🎒 Kho lưu trữ</h3>
+ <div id="inventory"><span>Chưa có vật phẩm</span></div>
+ <hr>
+ <button onclick="showJournal()">📖 Nhật ký</button>
+ <button onclick="showHint()">💡 Gợi ý</button>
+ <button class="secondary" onclick="resetGame()">🔄 Chơi lại</button>
+</div>
+
+<div id="puzzle">
+ <div class="panel">
+  <h2 id="puzzleTitle">Câu đố</h2>
+  <p id="puzzleQuestion"></p>
+  <div id="answers"></div>
+  <p id="feedback"></p>
+  <button onclick="closePuzzle()">Đóng</button>
+ </div>
+</div>
 
 <script>
-const c=document.getElementById("game");
-const ctx=c.getContext("2d");
-const levels=[
- ["🌾 Làng quê","Tìm chiếc khăn của Tấm!","🧣"],
- ["🌳 Khu rừng","Tìm giỏ hoa bị thất lạc!","🌸"],
- ["🏡 Nhà mẹ ghẻ","Tìm chìa khóa căn phòng!","🗝️"],
- ["🏰 Cung điện","Tìm cánh cửa dẫn đến Tấm!","🚪"],
- ["💗 Giải cứu Tấm","Đưa Tấm về nơi an toàn!","👸"]
+const stages=[
+ {
+  name:"Màn 1: Ngôi làng",
+  task:"Tìm chiếc chìa khóa bí mật trong ngôi làng!",
+  question:"Trong làng có 3 chiếc giỏ. Chiếc giỏ nào có chìa khóa?",
+  answers:["🧺 Giỏ hoa","🧺 Giỏ bên gốc cây","🧺 Giỏ bánh"],
+  correct:1,hint:"Hãy chú ý chiếc giỏ đặt gần gốc cây nhé!",
+  item:"🔑 Chìa khóa"
+ },
+ {
+  name:"Màn 2: Khu rừng bí ẩn",
+  task:"Giải mật mã để tìm đường ra khỏi khu rừng.",
+  question:"Giải mật mã: 2, 4, 6, 8, ... Số tiếp theo là?",
+  answers:["9","10","12"],
+  correct:1,hint:"Dãy số tăng thêm 2 mỗi lần.",
+  item:"🗺️ Bản đồ"
+ },
+ {
+  name:"Màn 3: Nhà dì ghẻ",
+  task:"Tìm manh mối trong căn nhà.",
+  question:"Tấm cần tìm vật gì để nhận ra chiếc rương bí mật?",
+  answers:["🌸 Bông hoa","🍎 Quả táo","🪞 Chiếc gương"],
+  correct:2,hint:"Đó là vật có thể phản chiếu hình ảnh.",
+  item:"🪞 Gương thần"
+ },
+ {
+  name:"Màn 4: Cung điện bí mật",
+  task:"Vượt qua câu đố logic để mở cánh cổng.",
+  question:"Có 3 cánh cửa. Cửa A ghi 'Kho báu ở B'. Cửa B ghi 'Kho báu không ở đây'. Cửa C ghi 'Kho báu ở đây'. Chỉ một câu đúng. Kho báu ở đâu?",
+  answers:["Cửa A","Cửa B","Cửa C"],
+  correct:1,hint:"Thử kiểm tra từng vị trí để chỉ có một câu đúng.",
+  item:"💎 Viên ngọc"
+ },
+ {
+  name:"Màn 5: Giải cứu Tấm",
+  task:"Giải câu đố cuối cùng để gặp Tấm!",
+  question:"Tấm có 3 quả táo, cho bạn 1 quả rồi được tặng thêm 2 quả. Tấm có bao nhiêu quả?",
+  answers:["3 quả","4 quả","5 quả"],
+  correct:2,hint:"Tính 3 - 1 + 2 nhé!",
+  item:"👑 Huy hiệu hoàng gia"
+ }
 ];
-let stage=0,player={x:55,y:340,v:0,vy:0},item,door,ground=380;
-let left=false,right=false,won=false,done=false;
-function setup(){
- player={x:55,y:340,v:0,vy:0};
- item={x:480+Math.random()*100,y:340,got:false};
- door={x:735,y:320};
- done=false;won=false;
- document.getElementById("level").textContent="Màn "+(stage+1)+" / 5";
- document.getElementById("task").textContent=levels[stage][1];
- document.getElementById("message").textContent="Hãy tìm vật phẩm để mở đường!";
+
+let stage=0,stars=0,hp=100,pos=15;
+let items=[],completed=[],journal=[];
+let keyFound=false;
+
+function save(){
+ localStorage.setItem("hoangTuGame",JSON.stringify({
+  stage,stars,hp,items,completed,journal
+ }));
 }
-function draw(){
- ctx.clearRect(0,0,800,450);
- let sky=ctx.createLinearGradient(0,0,0,450);
- sky.addColorStop(0,"#8bdcff");sky.addColorStop(1,"#e4f9ff");
- ctx.fillStyle=sky;ctx.fillRect(0,0,800,450);
- // clouds
- ctx.fillStyle="white";
- [[100,75],[350,110],[650,65]].forEach(([x,y])=>{
- ctx.beginPath();ctx.arc(x,y,24,0,7);ctx.arc(x+25,y-8,28,0,7);ctx.arc(x+52,y,22,0,7);ctx.fill();
- });
- // scenery
- ctx.fillStyle="#78c978";ctx.fillRect(0,380,800,70);
- ctx.fillStyle="#4eae69";
- for(let x=20;x<800;x+=100){
- ctx.beginPath();ctx.arc(x,375,32,0,7);ctx.fill();
- }
- // level title
- ctx.fillStyle="#633b55";ctx.font="bold 25px Arial";
- ctx.fillText(levels[stage][0],25,40);
- // collectible
- if(!item.got){
- ctx.font="48px Arial";ctx.fillText(levels[stage][2],item.x,item.y);
- }
- // door
- ctx.font="70px Arial";ctx.fillText("🚪",door.x,380);
- // prince
- ctx.font="48px Arial";ctx.fillText("👑",player.x+3,player.y-15);
- ctx.font="45px Arial";ctx.fillText("🤴",player.x,player.y+25);
- // stage 5 princess
- if(stage===4){
- ctx.font="48px Arial";ctx.fillText("👸",610,370);
- }
- if(won){
- ctx.fillStyle="rgba(255,255,255,.88)";
- ctx.fillRect(120,130,560,170);
- ctx.fillStyle="#d94d91";ctx.textAlign="center";
- ctx.font="bold 34px Arial";
- ctx.fillText(stage===4?"🎉 Giải cứu Tấm thành công!":"🌟 Hoàn thành màn chơi!",400,195);
- ctx.font="22px Arial";
- ctx.fillText(stage===4?"Chúc mừng hoàng tử!":"Nhấn TIẾP TỤC để đi tiếp",400,240);
- ctx.textAlign="left";
- }
+function load(){
+ try{
+  let d=JSON.parse(localStorage.getItem("hoangTuGame"));
+  if(d){
+   stage=Math.min(d.stage,4);stars=d.stars||0;hp=d.hp||100;
+   items=d.items||[];completed=d.completed||[];
+   journal=d.journal||[];
+  }
+ }catch(e){}
 }
 function update(){
- if(!won){
- if(left)player.x-=3.5;
- if(right)player.x+=3.5;
- player.x=Math.max(0,Math.min(750,player.x));
- player.vy+=0.55;player.y+=player.vy;
- if(player.y>340){player.y=340;player.vy=0;}
- if(!item.got && Math.abs(player.x-item.x)<48){
- item.got=true;
- document.getElementById("message").textContent="✨ Đã tìm được vật phẩm!";
+ document.getElementById("hp").textContent=hp;
+ document.getElementById("stars").textContent=stars;
+ document.getElementById("badges").textContent=completed.length+"/5";
+ document.getElementById("stageName").textContent=stages[stage].name;
+ document.getElementById("task").textContent=stages[stage].task;
+ document.getElementById("prince").style.left=pos+"%";
+ document.getElementById("key").style.display=stage===0&&!keyFound?"block":"none";
+ document.getElementById("house").textContent=
+  ["🏡","🌲","🏚️","🏰","🌸"][stage];
+ document.getElementById("inventory").innerHTML=items.length?
+  items.map(x=>"<span>"+x+"</span>").join(""):"<span>Chưa có vật phẩm</span>";
+ save();
+}
+function move(n){
+ pos=Math.max(3,Math.min(88,pos+n));
+ update();
+}
+function findKey(){
+ if(stage!==0||keyFound)return;
+ keyFound=true;
+ items.push("🔑 Chìa khóa");
+ stars+=1;
+ journal.push("Đã tìm thấy chiếc chìa khóa ở ngôi làng.");
+ alert("Tuyệt vời! Bạn đã tìm thấy chìa khóa! 🔑");
+ update();
+}
+function interact(){
+ if(stage===0&&!keyFound){
+  alert("Hãy di chuyển đến gần chiếc chìa khóa rồi chạm vào nó nhé!");
+  return;
  }
- if(item.got && player.x>690){
- won=true;
- document.getElementById("message").innerHTML=
- stage===4?"💖 Tấm đã được giải cứu!":"🎉 Đã xong! <button onclick='next()'>TIẾP TỤC ➜</button>";
+ openPuzzle();
+}
+function openPuzzle(){
+ let s=stages[stage];
+ document.getElementById("puzzleTitle").textContent="✨ "+s.name;
+ document.getElementById("puzzleQuestion").textContent=s.question;
+ document.getElementById("feedback").textContent="";
+ let box=document.getElementById("answers");
+ box.innerHTML="";
+ s.answers.forEach((a,i)=>{
+  let b=document.createElement("button");
+  b.className="answer";
+  b.textContent=a;
+  b.onclick=()=>answer(i);
+  box.appendChild(b);
+ });
+ document.getElementById("puzzle").style.display="flex";
+}
+function answer(i){
+ if(i===stages[stage].correct){
+  stars+=2;hp=Math.min(100,hp+10);
+  let item=stages[stage].item;
+  if(!items.includes(item))items.push(item);
+  completed.push(stage);
+  journal.push("Hoàn thành "+stages[stage].name+" và nhận "+item+".");
+  document.getElementById("feedback").textContent="🎉 Chính xác! Bạn đã vượt qua màn chơi!";
+  document.getElementById("answers").innerHTML=
+   '<button class="answer" onclick="nextStage()">Tiếp tục ➜</button>';
+ }else{
+  hp=Math.max(0,hp-5);
+  document.getElementById("hp").textContent=hp;
+  document.getElementById("feedback").textContent=
+   "Chưa đúng rồi! Thử lại nhé 💗";
+  save();
  }
+}
+function nextStage(){
+ document.getElementById("puzzle").style.display="none";
+ if(stage===4){
+  win();
+  return;
  }
- draw();requestAnimationFrame(update);
+ stage++;
+ pos=15;keyFound=false;
+ update();
 }
-function jump(){
- if(player.y>=339)player.vy=-12;
+function closePuzzle(){
+ document.getElementById("puzzle").style.display="none";
 }
-function next(){
- if(stage<4){stage++;setup();}
- else{document.getElementById("message").textContent="Bạn đã hoàn thành cả 5 màn! 💗";}
+function showHint(){
+ alert("💡 Gợi ý: "+stages[stage].hint);
 }
-function restart(){stage=0;setup();}
-function hold(id,fn,stop){
- let b=document.getElementById(id);
- b.addEventListener("pointerdown",e=>{e.preventDefault();fn();});
- if(stop)b.addEventListener("pointerup",stop);
- if(stop)b.addEventListener("pointerleave",stop);
- if(stop)b.addEventListener("pointercancel",stop);
+function showJournal(){
+ alert("📖 NHẬT KÝ\n\n"+
+ (journal.length?journal.join("\n"):"Bạn chưa có ghi chép nào."));
 }
-hold("left",()=>left=true,()=>left=false);
-hold("right",()=>right=true,()=>right=false);
-hold("jump",jump);
-document.addEventListener("keydown",e=>{
- if(e.key==="ArrowLeft"||e.key==="a")left=true;
- if(e.key==="ArrowRight"||e.key==="d")right=true;
- if(e.key==="ArrowUp"||e.key===" ")jump();
-});
-document.addEventListener("keyup",e=>{
- if(e.key==="ArrowLeft"||e.key==="a")left=false;
- if(e.key==="ArrowRight"||e.key==="d")right=false;
-});
-setup();update();
+function win(){
+ document.getElementById("mission").innerHTML=
+ "<h2>🎉 Chúc mừng! 🎉</h2><p>Hoàng tử đã tìm thấy và giải cứu được Tấm!</p><h2>👑🤴🏻💗👸🏻</h2><p>Bạn đã hoàn thành hành trình cổ tích!</p>";
+ document.getElementById("game").innerHTML=
+ '<div style="padding-top:65px;font-size:65px">🏰🌸👑🌸</div><h2>HAPPY ENDING!</h2><div style="font-size:55px">🤴🏻 💗 👸🏻</div>';
+ save();
+}
+function resetGame(){
+ if(confirm("Bạn muốn chơi lại từ đầu chứ?")){
+  localStorage.removeItem("hoangTuGame");
+  stage=0;stars=0;hp=100;pos=15;
+  items=[];completed=[];journal=[];keyFound=false;
+  location.reload();
+ }
+}
+load();
+if(completed.includes(0))keyFound=true;
+update();
 </script>
 </body>
 </html>
