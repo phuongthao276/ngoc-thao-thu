@@ -3,349 +3,261 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hoàng Tử Giải Cứu Tấm</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#fff0f6;color:#75445c;
- font-family:Arial,sans-serif;text-align:center;
-}
-header{
- padding:15px;background:#ffc9df;
- border-bottom:4px solid #fff;
-}
-h1{font-size:clamp(22px,5vw,32px);margin:4px}
-#hud{
- display:flex;justify-content:center;gap:12px;
- flex-wrap:wrap;padding:12px;background:#fff8fb;
- font-weight:bold;
-}
-.pill{background:white;border-radius:20px;padding:8px 13px}
-#mission{
- margin:12px auto;padding:12px;width:94%;
- max-width:900px;background:white;border-radius:16px;
-}
-#scene{
- position:relative;width:94%;max-width:900px;
- margin:auto;overflow:hidden;border:5px solid white;
- border-radius:22px;box-shadow:0 5px 15px #d9a6bd;
- background:#bceaff;
-}
-svg{display:block;width:100%;height:auto}
-#prince{
- position:absolute;width:11%;min-width:54px;max-width:90px;
- bottom:19%;left:12%;transition:left .18s;
- z-index:5;pointer-events:none;
-}
-#prince svg{width:100%;filter:drop-shadow(0 3px 2px #7775)}
-#target{
- position:absolute;left:72%;bottom:28%;
- font-size:clamp(25px,5vw,43px);cursor:pointer;
- filter:drop-shadow(0 3px 2px #777);
- animation:bob 1.4s infinite ease-in-out;
-}
+body{margin:0;font-family:Georgia,serif;background:#fce8f3;color:#55345e}
+button{font-family:inherit;cursor:pointer}
+.game{max-width:1050px;margin:auto;padding:12px}
+header{text-align:center;background:linear-gradient(120deg,#f7a8ce,#c9a5f5);color:white;border:4px solid white;border-radius:22px;padding:13px;box-shadow:0 4px 12px #9b6a9b55}
+h1{font-size:clamp(21px,5vw,34px);margin:3px;text-shadow:2px 3px #a65d9a}
+.subtitle{font-size:13px}
+.stats{display:flex;justify-content:space-between;gap:7px;flex-wrap:wrap;margin:10px 0}
+.stat{background:white;border:2px solid #e8b3d8;border-radius:13px;padding:8px 12px;font-weight:bold}
+.scene{height:390px;position:relative;overflow:hidden;border:5px solid white;border-radius:20px;box-shadow:0 5px 15px #80518b55;background:#a9e4d4}
+.scene svg{width:100%;height:100%;display:block}
+.level-label{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#fff0d9;border:3px solid #e9b4c9;border-radius:16px;padding:9px 16px;text-align:center;min-width:220px;box-shadow:0 3px 7px #74476a55}
+.level-label strong{display:block;font-size:19px;color:#8b4e83}
+.level-label span{font-size:13px}
+.prince{position:absolute;bottom:54px;left:12%;font-size:57px;filter:drop-shadow(2px 4px 2px #5557);transition:left .2s}
+.object{position:absolute;bottom:62px;right:19%;font-size:42px;animation:bob 1.5s infinite}
 @keyframes bob{50%{transform:translateY(-9px)}}
-#controls{
- display:flex;justify-content:center;gap:10px;
- flex-wrap:wrap;padding:15px;
-}
-button{
- border:0;border-radius:16px;padding:12px 17px;
- color:#71415a;background:#ffc0d8;font-weight:bold;
- font-size:15px;box-shadow:0 4px #e69ab9;
- cursor:pointer;
-}
-button:active{transform:translateY(3px);box-shadow:none}
-.purple{background:#d9c7ff;box-shadow:0 4px #b7a1e9}
-.panel{
- background:white;border-radius:18px;
- max-width:850px;width:94%;margin:8px auto;padding:15px;
-}
-#inventory{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
-.item{background:#fff0f6;padding:9px;border-radius:12px}
-#popup{
- display:none;position:fixed;inset:0;z-index:20;
- background:#51344ebd;align-items:center;justify-content:center;
- padding:15px;
-}
-#popup .panel{max-width:480px}
-.choice{display:block;width:100%;margin:9px 0}
-#message{min-height:25px;font-weight:bold}
-small{color:#a77d92}
-@media(max-width:500px){
- #scene{border-width:3px}
- button{padding:12px}
-}
+.ground{position:absolute;bottom:0;width:100%;height:55px;background:linear-gradient(#82c96c,#4e9b55);border-top:5px solid #b9df80}
+.controls{display:flex;justify-content:space-between;align-items:center;margin:10px 0;gap:8px}
+.move{display:flex;gap:8px}
+.control{border:3px solid white;border-radius:50%;width:55px;height:55px;background:#9a70c4;color:white;font-size:25px;box-shadow:0 3px 5px #684a7955}
+.panel{background:#fff;border:2px solid #edb8d8;border-radius:17px;padding:13px;margin-top:10px;box-shadow:0 3px 8px #a66c9b22}
+.panel h3{margin:0 0 8px;color:#995a91}
+.inventory{display:flex;gap:9px;flex-wrap:wrap}
+.item{background:#fff0f7;border:2px solid #e7b3d5;border-radius:12px;padding:9px;font-size:25px;min-width:53px;text-align:center}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.action{border:0;border-radius:12px;padding:11px 15px;background:#a879c5;color:white;font-weight:bold}
+.action.pink{background:#ed8fba}
+.action.gold{background:#e6ad4e;color:#573d25}
+.question{font-size:17px;line-height:1.5;color:#533a59}
+.answer{display:flex;gap:8px;margin-top:10px}
+input{min-width:0;flex:1;border:2px solid #ddb6d6;border-radius:10px;padding:12px;font-size:16px}
+.feedback{min-height:25px;font-weight:bold;margin-top:9px}
+.hint{background:#fff4ce;border:2px dashed #e6bd64;border-radius:12px;padding:10px;margin-top:10px;display:none;line-height:1.5}
+footer{text-align:center;color:#956c91;font-size:12px;padding:15px}
+@media(max-width:600px){.scene{height:310px}.level-label{min-width:190px;padding:7px}.level-label strong{font-size:16px}.prince{font-size:48px}.object{font-size:35px}.stat{font-size:12px;padding:7px}.control{width:49px;height:49px}}
 </style>
 </head>
 <body>
+<div class="game">
 <header>
- <h1>👑 HOÀNG TỬ GIẢI CỨU TẤM 🌸</h1>
- <div>Hành trình cổ tích diệu kỳ</div>
+  <div style="font-size:25px">👑 ✨ 🌸 👑</div>
+  <h1>Hoàng Tử Giải Cứu Tấm</h1>
+  <div class="subtitle">Một hành trình cổ tích đầy bí mật</div>
 </header>
 
-<div id="hud">
- <span class="pill">❤️ Năng lượng: <b id="hp">100</b></span>
- <span class="pill">⭐ Sao: <b id="stars">0</b></span>
- <span class="pill">🏅 Huy hiệu: <b id="badges">0/5</b></span>
+<div class="stats">
+  <div class="stat">❤️ <span id="health">100</span>/100</div>
+  <div class="stat">⭐ <span id="stars">0</span></div>
+  <div class="stat">🏅 <span id="medals">0</span>/5</div>
+  <div class="stat">📍 Màn <span id="stageNum">1</span>/5</div>
 </div>
 
-<div id="mission">
- <b id="stageName">MÀN 1 — NGÔI LÀNG</b>
- <p id="task">Hãy tìm chiếc chìa khóa bí mật!</p>
+<div class="scene" id="scene">
+  <svg id="landscape" viewBox="0 0 900 390" preserveAspectRatio="xMidYMid slice"></svg>
+  <div class="level-label">
+    <strong id="stageTitle">Màn 1: Ngôi làng</strong>
+    <span id="stageMission">Tìm chiếc chìa khóa bí mật!</span>
+  </div>
+  <div class="prince" id="prince">🤴🏻</div>
+  <div class="object" id="object">🔑</div>
+  <div class="ground"></div>
 </div>
 
-<div id="scene">
-<svg viewBox="0 0 900 440" xmlns="http://www.w3.org/2000/svg">
-<defs>
- <linearGradient id="sky" x2="0" y2="1">
-  <stop stop-color="#80d5f7"/><stop offset="1" stop-color="#e1f8ff"/>
- </linearGradient>
- <linearGradient id="grass" x2="0" y2="1">
-  <stop stop-color="#a8e58c"/><stop offset="1" stop-color="#54b978"/>
- </linearGradient>
- <linearGradient id="roof" x2="0" y2="1">
-  <stop stop-color="#f6a0a0"/><stop offset="1" stop-color="#d96f7c"/>
- </linearGradient>
-</defs>
-<!-- bầu trời -->
-<rect width="900" height="440" fill="url(#sky)"/>
-<circle cx="750" cy="75" r="42" fill="#ffe58b"/>
-<g fill="#fff" opacity=".9">
- <ellipse cx="145" cy="82" rx="55" ry="18"/>
- <ellipse cx="175" cy="72" rx="35" ry="24"/>
- <ellipse cx="520" cy="105" rx="60" ry="18"/>
- <ellipse cx="550" cy="93" rx="32" ry="24"/>
-</g>
-<!-- núi xa -->
-<path d="M0 265 L130 105 260 265 390 130 550 275 700 125 900 270 V440 H0Z" fill="#9cccae"/>
-<path d="M95 150 L130 105 165 150 140 142 130 151 118 140Z" fill="white"/>
-<path d="M355 172 L390 130 430 173 400 162 390 174 380 161Z" fill="white"/>
-<path d="M660 168 L700 125 745 170 712 157 700 170 687 156Z" fill="white"/>
-<!-- đồng cỏ -->
-<path d="M0 260 Q250 230 470 265 T900 250 V440 H0Z" fill="url(#grass)"/>
-<path d="M0 335 Q230 300 450 345 T900 320" fill="none" stroke="#d6f5a7" stroke-width="8"/>
-<!-- đường đi -->
-<path d="M250 440 Q390 320 590 350 Q700 370 790 440Z" fill="#e8c99b"/>
-<!-- nhà -->
-<g id="villageHouse">
- <rect x="365" y="205" width="185" height="130" rx="8" fill="#ffe1b5" stroke="#b97863" stroke-width="5"/>
- <path d="M340 215 L455 125 575 215Z" fill="url(#roof)" stroke="#b96d77" stroke-width="6"/>
- <rect x="430" y="260" width="55" height="75" rx="25" fill="#a86b59"/>
- <rect x="390" y="230" width="30" height="35" fill="#a8e6ff" stroke="#a86b59" stroke-width="4"/>
- <rect x="500" y="230" width="30" height="35" fill="#a8e6ff" stroke="#a86b59" stroke-width="4"/>
-</g>
-<!-- cây -->
-<g>
- <rect x="95" y="220" width="25" height="100" fill="#986344"/>
- <circle cx="105" cy="190" r="57" fill="#54ad71"/>
- <circle cx="65" cy="218" r="38" fill="#69c27d"/>
- <circle cx="145" cy="220" r="42" fill="#70cb81"/>
- <rect x="760" y="235" width="25" height="90" fill="#986344"/>
- <circle cx="770" cy="195" r="55" fill="#4ca96d"/>
- <circle cx="730" cy="220" r="40" fill="#72c981"/>
- <circle cx="810" cy="222" r="38" fill="#69bd78"/>
-</g>
-<!-- hoa nhỏ -->
-<g fill="#ffec9e">
- <circle cx="230" cy="355" r="5"/><circle cx="250" cy="380" r="5"/>
- <circle cx="650" cy="365" r="5"/><circle cx="680" cy="390" r="5"/>
-</g>
-<g fill="#ffb6d0">
- <circle cx="220" cy="355" r="3"/><circle cx="640" cy="365" r="3"/>
-</g>
-</svg>
-
-<!-- Hoàng tử được vẽ bằng SVG -->
-<div id="prince">
-<svg viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg">
-<!-- áo choàng -->
-<path d="M28 88 Q5 112 13 163 L105 163 Q112 112 88 88Z" fill="#d94b63" stroke="#9c304c" stroke-width="4"/>
-<path d="M42 100 L60 155 78 100" fill="#ffe2b1"/>
-<!-- chân -->
-<path d="M40 145 L37 165 M78 145 L83 165" stroke="#694c5a" stroke-width="11" stroke-linecap="round"/>
-<!-- thân -->
-<path d="M31 82 Q60 65 89 82 L91 125 Q60 142 29 125Z" fill="#f5d7a6" stroke="#a87961" stroke-width="3"/>
-<!-- cổ áo -->
-<path d="M42 78 L60 102 78 78" fill="#fff3db"/>
-<!-- mặt -->
-<ellipse cx="60" cy="51" rx="36" ry="38" fill="#ffd7b5" stroke="#9b6b57" stroke-width="3"/>
-<!-- tóc -->
-<path d="M25 48 Q18 3 60 12 Q102 8 96 54 Q80 29 63 32 Q42 25 25 48" fill="#654333"/>
-<path d="M25 42 Q10 52 26 64" fill="#654333"/>
-<!-- mắt -->
-<ellipse cx="47" cy="55" rx="4" ry="6" fill="#493c3b"/>
-<ellipse cx="73" cy="55" rx="4" ry="6" fill="#493c3b"/>
-<circle cx="48" cy="53" r="1.5" fill="white"/>
-<circle cx="74" cy="53" r="1.5" fill="white"/>
-<path d="M53 70 Q60 77 68 70" fill="none" stroke="#c36e75" stroke-width="3" stroke-linecap="round"/>
-<circle cx="35" cy="68" r="6" fill="#f5a4a2" opacity=".6"/>
-<circle cx="85" cy="68" r="6" fill="#f5a4a2" opacity=".6"/>
-<!-- vương miện -->
-<path d="M31 24 L25 0 45 14 60 0 76 14 96 0 89 27Z" fill="#ffd84f" stroke="#d69c29" stroke-width="3"/>
-<circle cx="60" cy="15" r="5" fill="#ff7eae"/>
-<!-- tay -->
-<path d="M32 91 Q12 92 17 115" stroke="#ffd7b5" stroke-width="12" fill="none" stroke-linecap="round"/>
-<path d="M87 91 Q108 92 103 115" stroke="#ffd7b5" stroke-width="12" fill="none" stroke-linecap="round"/>
-</svg>
-</div>
-<div id="target" onclick="collect()">🔑</div>
-</div>
-
-<div id="controls">
- <button onclick="move(-7)">⬅️ Trái</button>
- <button onclick="move(7)">Phải ➡️</button>
- <button class="purple" onclick="explore()">🔍 Khám phá</button>
+<div class="controls">
+  <div class="move">
+    <button class="control" onclick="move(-1)">⬅</button>
+    <button class="control" onclick="move(1)">➡</button>
+  </div>
+  <button class="action gold" onclick="interact()">✨ Tương tác</button>
+  <button class="control" onclick="jump()">⬆</button>
 </div>
 
 <div class="panel">
- <h3>🎒 Túi đồ</h3>
- <div id="inventory"><span class="item">Chưa có vật phẩm</span></div>
- <hr>
- <button onclick="journal()">📖 Nhật ký</button>
- <button onclick="hint()" class="purple">💡 Gợi ý</button>
- <button onclick="restart()">🔄 Chơi lại</button>
- <p><small>Dùng phím ← → trên máy tính hoặc nút trên màn hình điện thoại.</small></p>
+  <h3>🎒 Túi đồ</h3>
+  <div class="inventory" id="inventory">
+    <div class="item">🌸</div>
+  </div>
 </div>
 
-<div id="popup">
- <div class="panel">
-  <h2 id="qtitle">Câu đố</h2>
-  <p id="question"></p>
-  <div id="choices"></div>
-  <div id="message"></div>
-  <button onclick="closePopup()">Đóng</button>
- </div>
+<div class="panel">
+  <h3>📜 Thử thách của màn</h3>
+  <div class="question" id="question"></div>
+  <div class="answer">
+    <input id="answer" placeholder="Nhập câu trả lời..." autocomplete="off">
+    <button class="action pink" onclick="checkAnswer()">Trả lời</button>
+  </div>
+  <div class="feedback" id="feedback"></div>
+  <div class="actions">
+    <button class="action gold" onclick="showHint()">💡 Gợi ý</button>
+    <button class="action" onclick="resetLevel()">↻ Làm lại màn</button>
+  </div>
+  <div class="hint" id="hint"></div>
+</div>
+
+<div class="panel">
+  <h3>📖 Nhật ký hành trình</h3>
+  <div id="journal">Hoàng tử bắt đầu chuyến hành trình tìm Tấm...</div>
+</div>
+
+<footer>🌷 Chúc bạn có chuyến phiêu lưu thật vui! 🌷</footer>
 </div>
 
 <script>
-const levels=[
- {name:"MÀN 1 — NGÔI LÀNG",task:"Tìm chiếc chìa khóa được giấu trong ngôi làng.",
- q:"Người dân nói chìa khóa nằm ở nơi có nhiều hoa. Em hãy chọn nơi cần tìm.",
- a:["🌳 Gốc cây","🌷 Vườn hoa","🏡 Trong nhà"],c:1,
- hint:"Hãy tìm ở nơi có những bông hoa nhé!",item:"🔑 Chìa khóa"},
- {name:"MÀN 2 — RỪNG BÍ ẨN",task:"Tìm con đường đúng để vượt qua khu rừng.",
- q:"Dãy số trên tấm bia là 2, 4, 6, 8, ... Số tiếp theo là?",
- a:["9","10","12"],c:1,
- hint:"Mỗi số tăng thêm 2.",item:"🗺️ Bản đồ"},
- {name:"MÀN 3 — NHÀ DÌ GHẺ",task:"Tìm manh mối trong căn nhà cũ.",
- q:"Vật nào có thể phản chiếu hình ảnh của hoàng tử?",
- a:["🪞 Gương","🧺 Giỏ","📜 Cuộn giấy"],c:0,
- hint:"Vật này thường được treo trên tường.",item:"🪞 Gương"},
- {name:"MÀN 4 — CUNG ĐIỆN",task:"Giải câu đố để mở cánh cổng hoàng cung.",
- q:"Có 3 chiếc chìa khóa. Chỉ một chiếc mở được cổng. Manh mối nói chìa khóa đúng có màu vàng. Em chọn?",
- a:["🔵 Xanh","🟡 Vàng","🔴 Đỏ"],c:1,
- hint:"Đọc kỹ manh mối về màu sắc.",item:"💎 Viên ngọc"},
- {name:"MÀN 5 — GIẢI CỨU TẤM",task:"Hoàn thành thử thách cuối cùng để gặp Tấm.",
- q:"Tấm có 3 quả táo, cho đi 1 quả rồi được tặng thêm 2 quả. Tấm còn bao nhiêu?",
- a:["3 quả","4 quả","5 quả"],c:2,
- hint:"Tính 3 - 1 + 2 nhé!",item:"👑 Huy hiệu hoàng gia"}
+const stages=[
+{
+ title:"Màn 1: Ngôi làng",mission:"Tìm chiếc chìa khóa bí mật!",
+ question:"Một chiếc rương có mã gồm 3 chữ số. Chữ số hàng đơn vị gấp đôi hàng trăm. Hàng chục lớn hơn hàng trăm 1 đơn vị. Tổng 3 chữ số bằng 13. Mã là gì?",
+ answers:["256"],hint:["Hãy gọi chữ số hàng trăm là x.","Hai chữ số còn lại lần lượt là x + 1 và 2x."],
+ item:"🗝️",object:"🔑",journal:"Hoàng tử tìm thấy chiếc chìa khóa trong ngôi làng.",
+ sky:["#9ce3ed","#f8d9a0"],type:0
+},
+{
+ title:"Màn 2: Khu rừng bí ẩn",mission:"Giải mật mã để tìm đường!",
+ question:"Tìm số tiếp theo trong dãy: 2, 6, 12, 20, 30, ...",
+ answers:["42"],hint:["Hiệu giữa hai số liên tiếp lần lượt là 4, 6, 8, 10.","Hãy tìm hiệu tiếp theo."],
+ item:"🌟",object:"🧩",journal:"Hoàng tử vượt qua khu rừng bằng trí thông minh.",
+ sky:["#8ccbb4","#c7e8b7"],type:1
+},
+{
+ title:"Màn 3: Nhà mẹ kế",mission:"Tìm manh mối trong căn nhà!",
+ question:"Trong một căn phòng có 4 người. Mỗi người bắt tay với tất cả những người còn lại đúng một lần. Có tất cả bao nhiêu cái bắt tay?",
+ answers:["6"],hint:["Mỗi người bắt tay với 3 người khác.","Đừng đếm một cái bắt tay hai lần nhé!"],
+ item:"📜",object:"🪞",journal:"Hoàng tử tìm được manh mối quan trọng trong căn nhà.",
+ sky:["#d9a58b","#f5d2a7"],type:2
+},
+{
+ title:"Màn 4: Cung điện bí mật",mission:"Mở cánh cổng phép thuật!",
+ question:"Có 3 chiếc hộp. Chỉ một hộp chứa ngọc. Trên hộp A ghi: 'Ngọc không ở đây'. Hộp B ghi: 'Ngọc ở hộp A'. Hộp C ghi: 'Ngọc không ở hộp B'. Chỉ một câu ghi trên hộp là đúng. Ngọc ở hộp nào?",
+ answers:["b","hộp b","hop b"],hint:["Thử lần lượt giả sử ngọc ở A, B hoặc C.","Kiểm tra xem có đúng duy nhất một câu là đúng không."],
+ item:"💎",object:"🚪",journal:"Cánh cổng cung điện đã mở!",
+ sky:["#9ecdf2","#f3c8ed"],type:3
+},
+{
+ title:"Màn 5: Giải cứu Tấm",mission:"Vượt qua thử thách cuối cùng!",
+ question:"Một người đi từ làng đến cung điện. Ngày đầu đi được một nửa quãng đường còn lại và thêm 2 km. Ngày thứ hai đi được một nửa quãng đường còn lại và thêm 2 km. Sau đó còn 4 km. Hỏi quãng đường ban đầu dài bao nhiêu km?",
+ answers:["24"],hint:["Làm ngược từ cuối: trước ngày thứ hai còn bao nhiêu km?","Nếu còn 4 km sau khi đi, trước đó người ấy có 2 × (4 + 2) km."],
+ item:"💗",object:"🌹",journal:"Tấm đã được giải cứu. Hành trình cổ tích hoàn thành!",
+ sky:["#f7b6d5","#b8d9fa"],type:4
+}
 ];
-let level=0,pos=12,hp=100,stars=0,items=[],done=[],notes=[];
-let collected=false;
+
+let current=0,position=12,stars=0,medals=0,inventory=["🌸"],hints=0,completed=[];
 const $=id=>document.getElementById(id);
 
-function save(){
- localStorage.setItem("tamChibiSave",JSON.stringify({level,pos,hp,stars,items,done,notes,collected}));
+function drawScene(type){
+ const svg=$("landscape");
+ const s=[
+ `<rect width="900" height="390" fill="#9ce3ed"/><circle cx="730" cy="65" r="38" fill="#fff0a4"/><path d="M0 220 Q150 100 300 220 T600 210 T900 200 V390 H0" fill="#91c985"/><path d="M0 275 Q200 205 400 280 T900 260 V390 H0" fill="#6cb66b"/><g fill="#f6c3a7" stroke="#9a6657" stroke-width="5"><path d="M65 175 L145 105 L225 175 V285 H65Z"/><path d="M280 190 L350 125 L420 190 V290 H280Z"/></g><g fill="#bd6d78"><path d="M48 178 L145 92 L242 178Z"/><path d="M265 192 L350 112 L435 192Z"/></g><g fill="#fff3d6"><rect x="95" y="210" width="38" height="75"/><rect x="160" y="205" width="38" height="38"/><rect x="320" y="220" width="35" height="65"/></g><g fill="#5b9d58"><circle cx="520" cy="165" r="60"/><circle cx="610" cy="145" r="70"/><circle cx="820" cy="170" r="75"/></g>`,
+ `<rect width="900" height="390" fill="#9bcbb7"/><circle cx="740" cy="60" r="32" fill="#fff3b4"/><path d="M0 260 Q150 160 300 260 T600 240 T900 250 V390 H0" fill="#548c65"/><g fill="#28694e"><path d="M30 280 Q40 80 100 45 Q160 100 165 280Z"/><path d="M700 280 Q720 50 800 25 Q880 100 880 280Z"/><path d="M350 280 Q360 100 420 70 Q490 120 490 280Z"/></g><path d="M0 330 Q250 270 430 335 T900 300" stroke="#a6d9ee" stroke-width="38" fill="none"/><g fill="#e8b4ee"><circle cx="240" cy="210" r="22"/><circle cx="600" cy="195" r="25"/><circle cx="540" cy="280" r="17"/></g><g fill="#fff1a9"><circle cx="300" cy="100" r="5"/><circle cx="570" cy="80" r="6"/><circle cx="650" cy="145" r="5"/></g>`,
+ `<rect width="900" height="390" fill="#e8b99e"/><rect y="275" width="900" height="115" fill="#b87e63"/><path d="M80 275 V90 H820 V275" fill="#b97968" stroke="#764d50" stroke-width="12"/><path d="M110 90 L450 20 L790 90Z" fill="#87505b"/><g fill="#f9e0ae" stroke="#865e54" stroke-width="7"><rect x="160" y="125" width="100" height="110"/><rect x="640" y="125" width="100" height="110"/></g><g fill="#d58b72"><rect x="385" y="145" width="130" height="130"/><path d="M375 145 L450 75 L525 145Z"/></g><path d="M0 300 H900" stroke="#eac19c" stroke-width="9"/><g fill="#784c48"><rect x="70" y="255" width="760" height="15"/><rect x="100" y="270" width="15" height="65"/><rect x="780" y="270" width="15" height="65"/></g>`,
+ `<rect width="900" height="390" fill="#a9d9f6"/><circle cx="740" cy="65" r="35" fill="#fff1b0"/><path d="M0 290 L100 150 L200 290 L300 130 L400 290 L520 150 L650 290 L770 120 L900 290Z" fill="#7cb4d5"/><g fill="#fff0db" stroke="#9b82b9" stroke-width="5"><rect x="250" y="130" width="400" height="180"/><path d="M230 135 L450 25 L670 135Z"/><path d="M300 130 L340 50 L380 130Z"/><path d="M520 130 L560 50 L600 130Z"/></g><path d="M370 310 V190 Q450 105 530 190 V310Z" fill="#8c64b5" stroke="#f7d77e" stroke-width="8"/><path d="M390 280 Q450 170 510 280" fill="none" stroke="#d9b7ff" stroke-width="8"/><g fill="#69aa68"><circle cx="110" cy="270" r="55"/><circle cx="790" cy="270" r="55"/></g>`,
+ `<rect width="900" height="390" fill="#f8c5df"/><circle cx="730" cy="60" r="40" fill="#fff4bb"/><path d="M0 275 Q180 210 350 270 T700 255 T900 270 V390 H0" fill="#8ecb8b"/><g fill="#fff2e8" stroke="#d6a5d0" stroke-width="5"><path d="M100 290 V100 H180 V290Z"/><path d="M720 290 V100 H800 V290Z"/><path d="M180 110 Q450 -20 720 110" fill="none" stroke-width="20"/></g><g fill="#f5a5c8"><circle cx="250" cy="180" r="12"/><circle cx="300" cy="235" r="10"/><circle cx="650" cy="180" r="12"/><circle cx="590" cy="240" r="10"/></g><g fill="#6db36c"><circle cx="80" cy="280" r="45"/><circle cx="830" cy="280" r="45"/></g><path d="M0 345 Q450 300 900 345" stroke="#f8e6d5" stroke-width="22" fill="none"/>`
+ ];
+ svg.innerHTML=s[type]||s[0];
 }
-function load(){
- try{
-  const d=JSON.parse(localStorage.getItem("tamChibiSave"));
-  if(d){level=d.level||0;pos=d.pos||12;hp=d.hp??100;stars=d.stars||0;
-   items=d.items||[];done=d.done||[];notes=d.notes||[];collected=d.collected||false;}
- }catch(e){}
-}
-function update(){
- $("hp").textContent=hp;
+function render(){
+ const st=stages[current];
+ $("stageTitle").textContent=st.title;
+ $("stageMission").textContent=st.mission;
+ $("question").textContent=st.question;
+ $("stageNum").textContent=current+1;
+ $("object").textContent=st.object;
+ $("object").style.display=completed.includes(current)?"none":"block";
+ $("hint").style.display="none";
+ $("hint").textContent="";
+ $("feedback").textContent="";
+ $("answer").value="";
+ hints=0;
+ drawScene(st.type);
+ $("prince").style.left=position+"%";
+ $("health").textContent=100;
  $("stars").textContent=stars;
- $("badges").textContent=done.length+"/5";
- $("stageName").textContent=levels[level].name;
- $("task").textContent=levels[level].task;
- $("prince").style.left=pos+"%";
- $("target").style.display=(level===0&&!collected)?"block":"none";
- $("inventory").innerHTML=items.length?items.map(x=>'<span class="item">'+x+'</span>').join(""):'<span class="item">Chưa có vật phẩm</span>';
- save();
+ $("medals").textContent=medals;
+ $("inventory").innerHTML=inventory.map(x=>`<div class="item">${x}</div>`).join("");
+ $("journal").textContent=st.journal;
 }
-function move(n){
- pos=Math.max(2,Math.min(87,pos+n));
- update();
+function move(direction){
+ position=Math.max(2,Math.min(88,position+direction*6));
+ $("prince").style.left=position+"%";
 }
-function collect(){
- if(level!==0||collected)return;
- collected=true;items.push("🔑 Chìa khóa");stars++;
- notes.push("Đã tìm thấy chìa khóa trong ngôi làng.");
- $("message").textContent="Bạn đã tìm thấy chìa khóa!";
- update();
+function jump(){
+ const p=$("prince");
+ p.style.transform="translateY(-55px)";
+ setTimeout(()=>p.style.transform="",350);
 }
-function explore(){
- if(level===0&&!collected){
-  alert("Hãy chạm vào chiếc chìa khóa trong cảnh vật trước nhé!");
+function interact(){
+ if(position<55){
+  $("feedback").textContent="Tiến lại gần đồ vật ở phía bên phải nhé!";
   return;
  }
- openQuestion();
+ $("feedback").textContent="Bạn đã đến gần vật thể! Hãy giải câu đố để tiếp tục.";
+ $("answer").focus();
 }
-function openQuestion(){
- const s=levels[level];
- $("qtitle").textContent=s.name;
- $("question").textContent=s.q;
- $("message").textContent="";
- $("choices").innerHTML="";
- s.a.forEach((a,i)=>{
-  const b=document.createElement("button");
-  b.className="choice";b.textContent=a;
-  b.onclick=()=>answer(i);
-  $("choices").appendChild(b);
- });
- $("popup").style.display="flex";
-}
-function answer(i){
- if(i===levels[level].c){
-  stars+=2;
-  hp=Math.min(100,hp+10);
-  if(!items.includes(levels[level].item))items.push(levels[level].item);
-  if(!done.includes(level))done.push(level);
-  notes.push("Hoàn thành "+levels[level].name+".");
-  $("message").textContent="🎉 Chính xác! Bạn đã vượt qua thử thách!";
-  $("choices").innerHTML='<button class="choice" onclick="nextLevel()">Đi tiếp ➜</button>';
-  update();
+function showHint(){
+ const st=stages[current];
+ if(hints>=st.hint.length){
+  $("hint").textContent="Bạn đã xem hết gợi ý của màn này. Hãy thử tự suy luận nhé!";
  }else{
-  hp=Math.max(0,hp-5);
-  $("hp").textContent=hp;
-  $("message").textContent="Chưa đúng rồi, thử lại nhé!";
-  save();
+  $("hint").textContent="Gợi ý "+(hints+1)+": "+st.hint[hints];
+  hints++;
+ }
+ $("hint").style.display="block";
+}
+function checkAnswer(){
+ const value=$("answer").value.trim().toLowerCase().replace(/\s+/g," ");
+ if(!value){$("feedback").textContent="Nhập câu trả lời trước nhé!";return;}
+ const st=stages[current];
+ if(st.answers.includes(value)){
+  if(!completed.includes(current)){
+   completed.push(current);stars+=10;medals++;
+   inventory.push(st.item);
+  }
+  $("feedback").textContent="🎉 Chính xác! Bạn đã vượt qua màn này!";
+  $("object").style.display="none";
+  $("stars").textContent=stars;
+  $("medals").textContent=medals;
+  $("inventory").innerHTML=inventory.map(x=>`<div class="item">${x}</div>`).join("");
+  localStorage.setItem("princeGame",JSON.stringify({current,stars,medals,inventory,completed}));
+  setTimeout(()=>{
+   if(current<4){
+    current++;position=12;render();
+   }else{
+    $("question").textContent="🌸 Chúc mừng! Bạn đã giải cứu được Tấm và hoàn thành hành trình!";
+    $("answer").style.display="none";
+    $("object").textContent="💗";
+    $("object").style.display="block";
+    $("journal").textContent="Bạn đã hoàn thành cả 5 màn chơi. Cảm ơn bạn đã tham gia!";
+    $("feedback").textContent="🏆 CHIẾN THẮNG!";
+   }
+  },1400);
+ }else{
+  $("feedback").textContent="Chưa chính xác! Hãy suy nghĩ thêm nhé. 💭";
  }
 }
-function nextLevel(){
- $("popup").style.display="none";
- if(level===4){ending();return;}
- level++;pos=12;collected=false;
- $("target").textContent=["🔑","🗺️","🪞","💎","👸🏻"][level];
- update();
+function resetLevel(){
+ completed=completed.filter(x=>x!==current);
+ render();
+ $("feedback").textContent="Đã đặt lại thử thách của màn này.";
 }
-function closePopup(){$("popup").style.display="none";}
-function hint(){alert("💡 "+levels[level].hint);}
-function journal(){alert("📖 NHẬT KÝ\n\n"+(notes.join("\n")||"Chưa có ghi chép."));}
-function restart(){
- if(confirm("Chơi lại từ đầu?")){
-  localStorage.removeItem("tamChibiSave");
-  location.reload();
- }
+$("answer").addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer()});
+const saved=localStorage.getItem("princeGame");
+if(saved){
+ try{
+  const data=JSON.parse(saved);
+  current=Math.min(data.current||0,4);
+  stars=data.stars||0;medals=data.medals||0;
+  inventory=data.inventory||["🌸"];
+  completed=data.completed||[];
+ }catch(e){}
 }
-function ending(){
- $("mission").innerHTML="<h2>🎉 BẠN ĐÃ GIẢI CỨU ĐƯỢC TẤM!</h2><p>Hoàng tử và Tấm đã đoàn tụ. Câu chuyện có một kết thúc thật đẹp!</p>";
- $("scene").innerHTML='<svg viewBox="0 0 900 440"><rect width="900" height="440" fill="#bceaff"/><circle cx="750" cy="70" r="45" fill="#ffe58b"/><path d="M0 290 Q450 200 900 290 V440 H0" fill="#83d28b"/><text x="450" y="170" text-anchor="middle" font-size="90">🏰</text><text x="450" y="290" text-anchor="middle" font-size="95">🤴🏻 💗 👸🏻</text><text x="450" y="370" text-anchor="middle" font-size="38" fill="#9b4770" font-weight="bold">HAPPY ENDING!</text></svg>';
- $("controls").style.display="none";
-}
-document.addEventListener("keydown",e=>{
- if(e.key==="ArrowLeft")move(-4);
- if(e.key==="ArrowRight")move(4);
-});
-load();
-if(done.includes(0))collected=true;
-update();
-if(level===4&&done.includes(4))ending();
+render();
 </script>
 </body>
 </html>
-
